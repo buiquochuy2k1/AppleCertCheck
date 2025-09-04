@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Check File P12</title>
+  <!-- Animation.css CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://cdn.wallpaperhub.app/cloudcache/c/1/4/5/2/7/c1452724f0c3bb5a9a9a9898b4c0a0cfac091f70.jpg') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+
+    .glass-container {
+      background: rgba(255, 255, 255, 0.65);
+      border-radius: 16px;
+      padding: 30px 40px;
+      width: 380px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      color: #111;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #111;
+    }
+
+    input[type="file"], input[type="password"] {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #111;
+    }
+
+    input::placeholder {
+      color: #555;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 114, 255, 0.5);
+    }
+
+    #result {
+      margin-top: 25px;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .success {
+      background: rgba(0, 255, 0, 0.2);
+      border: 1px solid rgba(0, 200, 0, 0.6);
+      color: #006400; /* xanh đậm */
+    }
+
+    .error {
+      background: rgba(255, 0, 0, 0.2);
+      border: 1px solid rgba(255, 0, 0, 0.6);
+      color: #8b0000; /* đỏ đậm */
+    }
+
+    .unknown {
+      background: rgba(255, 165, 0, 0.2);
+      border: 1px solid rgba(255, 165, 0, 0.6);
+      color: #8b4500; /* cam nâu đậm */
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-container animate__animated animate__fadeInDown">
+    <h2>🔐 Kiểm tra file P12</h2>
+    <form id="checkForm">
+      <input type="file" name="p12" accept=".p12,.pfx" required><br>
+      <input type="password" name="password" placeholder="Nhập mật khẩu (có thể để trống)"><br>
+      <button type="submit">Kiểm tra</button>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById("checkForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      const res = await fetch("/check", {
+        method: "POST",
+        body: formData
+      });
+
+      const html = await res.text();
+
+      // phân loại để thêm class màu
+      let cssClass = "unknown";
+      if (html.includes("Hợp lệ")) cssClass = "success";
+      if (html.includes("Thu hồi")) cssClass = "error";
+
+      document.getElementById("result").className = cssClass + " animate__animated animate__fadeInUp";
+      document.getElementById("result").innerHTML = html;
+    });
+  </script>
+</body>
+</html>
